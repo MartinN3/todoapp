@@ -9,12 +9,14 @@ export default function loader(queryClient: QueryClient) {
     // I think orval doesn't provide queryOptions for this purpose yet
     const queryOrvalOptions = getGetProductsProductIdQueryOptions(toInt(id));
 
-    // We just do it with orval method but by hand
+    // We just do it with orval + tanstack method by hand
     const query = queryOptions({
       queryKey: queryOrvalOptions.queryKey,
       queryFn: queryOrvalOptions.queryFn,
     });
+
     return (
+      // get from cache or fetch from server if doesnt exist
       queryClient.getQueryData(query.queryKey) ??
       (await queryClient.fetchQuery(query))
     );

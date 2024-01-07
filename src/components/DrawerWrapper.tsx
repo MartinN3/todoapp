@@ -10,7 +10,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 export default function DrawerWrapper() {
   const navigate = useNavigate();
   return (
-    <Drawer isOpen={true} size={'xl'} onClose={() => navigate(-1)}>
+    <Drawer isOpen={true} size={'xl'} onClose={() => navigate('..')}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />

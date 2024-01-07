@@ -12,13 +12,13 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Card, CardBody, CardFooter } from '@chakra-ui/react';
-import { Link, Outlet, generatePath } from 'react-router-dom';
+import { Link, generatePath } from 'react-router-dom';
 
 import { ROUTES } from '../../constants/routes';
 import { useGetProducts } from '../../lib/api/product/product';
 
 export default function Products() {
-  const { data, status, error } = useGetProducts({});
+  const { data, status, error } = useGetProducts();
 
   if (status === 'error') {
     return <span>Error: {error.message}</span>;
@@ -79,7 +79,6 @@ export default function Products() {
           )}
         </SimpleGrid>
       </Container>
-      <Outlet />
     </>
   );
 }

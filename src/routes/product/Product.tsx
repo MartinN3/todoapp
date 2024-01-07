@@ -8,22 +8,28 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { Link, generatePath, useParams } from 'react-router-dom';
+import { Link, generatePath, useLoaderData, useParams } from 'react-router-dom';
 import toInt from 'validator/es/lib/toInt';
 
 import { ROUTES } from '../../constants/routes';
 import { useGetProductsProductId } from '../../lib/api/product/product';
+import loader from './routerLoader';
 
 export default function Product() {
+  // first we get data fetched by react router
+  const initialData = useLoaderData() as Awaited<
+    ReturnType<ReturnType<typeof loader>>
+  >;
+
   const { id = '' } = useParams();
 
   const { data, status, error } = useGetProductsProductId(
+    // types explicitly say to send number ID param API but usually we can send both
     toInt(id),
     undefined,
     {
       query: {
-        // https://stackoverflow.com/questions/60964575/in-the-book-you-dont-know-js-i-have-a-question-about-isnan-polyfills
-        enabled: toInt(id) === toInt(id),
+        initialData,
       },
     },
   );
@@ -33,6 +39,14 @@ export default function Product() {
   }
 
   if (status === 'pending') {
+    if (toInt(id) !== toInt(id)) {
+      return (
+        <span>
+          Product doesn't exist because only numbered products are possible
+        </span>
+      );
+    }
+
     return <span>Loading...</span>;
   }
 
