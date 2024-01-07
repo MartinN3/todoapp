@@ -58,7 +58,7 @@ const router = createBrowserRouter([
       {
         path: ROUTES.products,
         element: <Products />,
-        loader: productsLoader,
+        loader: productsLoader(queryClient),
       },
       {
         path: ROUTES.product,
