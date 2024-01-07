@@ -12,14 +12,20 @@ import {
   generatePath,
   useLoaderData,
   useParams,
+  useRouteLoaderData,
 } from 'react-router-dom';
 import toInt from 'validator/es/lib/toInt';
 
 import { ROUTES } from '../../constants/routes';
-import { useGetProductsProductId } from '../../lib/api/product/product';
+import {
+  getGetProductsProductIdQueryOptions,
+  useGetProductsProductId,
+} from '../../lib/api/product/product';
+import { User } from '../../model';
 import loader from './route/routeLoader';
 
 export default function ProductEditRoute() {
+  const { user } = useRouteLoaderData('root') as { user: User | null };
   const initialData = useLoaderData() as Awaited<
     ReturnType<ReturnType<typeof loader>>
   >;
@@ -31,6 +37,11 @@ export default function ProductEditRoute() {
     {
       query: {
         initialData,
+        queryKey: [
+          ...getGetProductsProductIdQueryOptions(toInt(params.id ?? ''))
+            .queryKey,
+          user?.username,
+        ],
       },
     },
   );
@@ -38,15 +49,11 @@ export default function ProductEditRoute() {
   return (
     <Form method="post">
       <Stack mt={10} mb={4} gap={4}>
-        <Input name="title" defaultValue={product?.data.title} />
-        <Textarea name="description" defaultValue={product?.data.description} />
+        <Input name="title" defaultValue={product?.title} />
+        <Textarea name="description" defaultValue={product?.description} />
         <InputGroup>
           <InputLeftAddon>$</InputLeftAddon>
-          <Input
-            name="price"
-            type="number"
-            defaultValue={product?.data.price}
-          />
+          <Input name="price" type="number" defaultValue={product?.price} />
         </InputGroup>
       </Stack>
       <Stack gap={4} direction={'row'}>
@@ -55,7 +62,7 @@ export default function ProductEditRoute() {
         </Button>
         <Button
           as={RouterLink}
-          to={generatePath(ROUTES.product, { id: product?.data.id })}
+          to={generatePath(ROUTES.product, { id: product?.id })}
         >
           Cancel
         </Button>

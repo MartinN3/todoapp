@@ -1,12 +1,15 @@
-import { Button, Container, Select } from '@chakra-ui/react';
-import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { useEffect, useState } from 'react';
+import { Button, Container, Input, Select, Text } from '@chakra-ui/react';
+import { useState } from 'react';
+import {
+  Form,
+  useActionData,
+  useNavigation,
+  useRouteLoaderData,
+  useSearchParams,
+} from 'react-router-dom';
 
-import useAuthDispatch from '../../hooks/useAuthDispatch';
-import { Product } from '../../model';
-import { User } from '../../model/user';
-import { AXIOS_INSTANCE } from '../../utils/customAxiosInstance';
+import { ROUTES } from '../../constants/routes';
+import { PostAuthLoginBody, User } from '../../model';
 
 const users = [
   {
@@ -21,59 +24,53 @@ const users = [
     username: 'rshawe2',
     password: 'OWsTbMUgFc',
   },
-];
-
-/**
- * @summary create a new product
- */
-const postLogin = (
-  login: {
-    username: string;
-    password: string;
-  },
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<User>> => {
-  return AXIOS_INSTANCE.post(
-    `https://dummyjson.com/auth/login`,
-    login,
-    options,
-  );
-};
+] satisfies PostAuthLoginBody[];
 
 export default function LoginRoute() {
-  const [selectedLogin, setSelectedLogin] = useState();
-  const test = useAuthDispatch();
+  const { user } = useRouteLoaderData('root') as { user: User | null };
+  const [params] = useSearchParams();
+  const [selectedLogin, setSelectedLogin] = useState<PostAuthLoginBody | null>(
+    user,
+  );
 
-  const mutation = useMutation({
-    mutationFn: (login) => {
-      return postLogin(login);
-    },
-  });
+  const from = params.get('from');
 
-  useEffect(() => {
-    if (mutation.data?.data.token) {
-      test(mutation.data?.data.token);
-    }
-  }, [mutation.data?.data.token, test]);
+  const navigation = useNavigation();
+  const isLoggingIn = navigation.formData?.get('username') != null;
+
+  const actionData = useActionData() as { error: string } | undefined;
 
   return (
     <Container>
+      {from && <Text>You must log in to view the page at {from}</Text>}
+
       <Select
-        placeholder="Select option"
+        placeholder="Select user"
         value={selectedLogin?.username}
         onChange={(e) => {
           setSelectedLogin(
-            users.find((user) => user.username === e.target.value),
+            users.find((user) => user.username === e.target.value) ?? null,
           );
         }}
       >
         {users.map((user) => (
-          <option value={user.username}>{user.username}</option>
+          <option key={user.username} value={user.username}>
+            {user.username}
+          </option>
         ))}
       </Select>
-      <Button type="submit" onClick={() => mutation.mutate(selectedLogin)}>
-        Přihlásit
-      </Button>
+
+      <Form method="post" replace>
+        <Input type="hidden" name="redirectTo" value={from ?? ROUTES.root} />
+        <Input value={selectedLogin?.username ?? ''} name="username" readOnly />
+        <Input value={selectedLogin?.password ?? ''} name="password" readOnly />
+        <Button type="submit" disabled={isLoggingIn}>
+          {isLoggingIn ? 'Logging in...' : 'Login'}
+        </Button>
+      </Form>
+      {actionData && actionData.error ? (
+        <Text colorScheme="red">{actionData.error}</Text>
+      ) : null}
     </Container>
   );
 }

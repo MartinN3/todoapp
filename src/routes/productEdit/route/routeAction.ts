@@ -8,9 +8,12 @@ import {
   getGetProductsQueryOptions,
   patchProductsProductId,
 } from '../../../lib/api/product/product';
+import { fakeAuthProvider } from '../../../utils/auth';
 
 export default function action(queryClient: QueryClient) {
   return async ({ request, params: { id = '' } }: ActionFunctionArgs) => {
+    const { user } = fakeAuthProvider;
+
     const formData = await request.formData();
     const updates = Object.fromEntries(formData);
     const response = await patchProductsProductId(toInt(id), updates);
@@ -24,7 +27,10 @@ export default function action(queryClient: QueryClient) {
     // });
 
     // but since we use dummy i manually update cache for product
-    queryClient.setQueryData(productEditQueryOrvalKey, response);
+    queryClient.setQueryData(
+      [...productEditQueryOrvalKey, user?.username],
+      response,
+    );
 
     // and since we got products list, we have to update it too by hand
     // which would have to be abstracted to not be as ugly
@@ -34,11 +40,10 @@ export default function action(queryClient: QueryClient) {
 
     // orval generated api typescript hack
     const productsQuery = queryOptions({
-      queryKey: productsQueryOrvalOptions.queryKey,
+      queryKey: [...productsQueryOrvalOptions.queryKey, user?.username],
       queryFn: productsQueryOrvalOptions.queryFn,
     });
 
-    console.log(productsQueryOrvalOptions.queryKey);
     // get products cache or fetch products if doesn't exist
     const productsQueryCache =
       queryClient.getQueryData(productsQuery.queryKey) ??
@@ -47,16 +52,13 @@ export default function action(queryClient: QueryClient) {
     // update product cache
     queryClient.setQueryData(productsQuery.queryKey, {
       ...productsQueryCache,
-      data: {
-        ...productsQueryCache.data,
-        products: productsQueryCache.data.products?.map((product) => {
-          if (product.id !== toInt(id)) {
-            return product;
-          }
+      products: productsQueryCache.products?.map((product) => {
+        if (product.id !== toInt(id)) {
+          return product;
+        }
 
-          return response.data;
-        }),
-      },
+        return response;
+      }),
     });
 
     return redirect(generatePath(ROUTES.product, { id }));

@@ -8,21 +8,31 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { Link, generatePath, useLoaderData, useParams } from 'react-router-dom';
+import {
+  Link,
+  generatePath,
+  useLoaderData,
+  useParams,
+  useRouteLoaderData,
+} from 'react-router-dom';
 import toInt from 'validator/es/lib/toInt';
 
 import { ROUTES } from '../../constants/routes';
-import { useGetProductsProductId } from '../../lib/api/product/product';
+import {
+  getGetProductsProductIdQueryOptions,
+  useGetProductsProductId,
+} from '../../lib/api/product/product';
+import { User } from '../../model';
 import loader from './route/routeLoader';
 
 export default function ProductRoute() {
+  const { user } = useRouteLoaderData('root') as { user: User | null };
   // first we get data fetched by react router
   const initialData = useLoaderData() as Awaited<
     ReturnType<ReturnType<typeof loader>>
   >;
 
   const { id = '' } = useParams();
-
   const { data, status, error } = useGetProductsProductId(
     // types explicitly say to send number ID param API but usually we can send both
     toInt(id),
@@ -30,6 +40,10 @@ export default function ProductRoute() {
     {
       query: {
         initialData,
+        queryKey: [
+          ...getGetProductsProductIdQueryOptions(toInt(id)).queryKey,
+          user?.username,
+        ],
       },
     },
   );
@@ -54,17 +68,17 @@ export default function ProductRoute() {
     <>
       <Box height={280}>
         <Image
-          src={data?.data.images?.find(Boolean)}
+          src={data.images?.find(Boolean)}
           alt="Green double couch with wooden legs"
           borderRadius="lg"
           maxH={280}
         />
       </Box>
       <Stack mt="6" mb="2" spacing="3">
-        <Heading size="md">{data?.data.title}</Heading>
-        <Text noOfLines={3}>{data?.data.description}</Text>
+        <Heading size="md">{data.title}</Heading>
+        <Text noOfLines={3}>{data.description}</Text>
         <Text color="blue.600" fontSize="2xl">
-          {data?.data.price} $
+          {data.price} $
         </Text>
       </Stack>
       <Divider />
@@ -73,7 +87,7 @@ export default function ProductRoute() {
           variant="solid"
           colorScheme="blue"
           as={Link}
-          to={generatePath(ROUTES.productEdit, { id: data?.data.id })}
+          to={generatePath(ROUTES.productEdit, { id: data.id })}
         >
           Edit
         </Button>

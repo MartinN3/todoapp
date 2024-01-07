@@ -1,8 +1,6 @@
 import Axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
-export const AXIOS_INSTANCE = Axios.create({
-  baseURL: 'https://dummyjson.com',
-});
+import { AXIOS_INSTANCE } from '../constants/axiosInstance';
 
 export const customAxiosInstance = <T>(
   config: AxiosRequestConfig,
@@ -12,7 +10,7 @@ export const customAxiosInstance = <T>(
     ({ data }) => data,
   );
 
-  // @ts-expect-error axios instance wrong type
+  // @ts-expect-error axios tanstack inconsistency in type, would have to dig
   promise.cancel = () => {
     source.cancel('Query was cancelled Tanstack Query');
   };

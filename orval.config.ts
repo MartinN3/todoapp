@@ -12,6 +12,12 @@ export default defineConfig({
       client: 'react-query',
       mock: true,
       prettier: true,
+      override: {
+        mutator: {
+          path: './lib/customAxiosInstance.ts',
+          name: 'customAxiosInstance',
+        },
+      },
     },
   },
 });

@@ -2,12 +2,10 @@ import { HStack, Link, Text } from '@chakra-ui/react';
 import { PropsWithChildren } from 'react';
 import { NavLink } from 'react-router-dom';
 
+import AuthStatus from './components/AuthStatus';
 import { ROUTES } from './constants/routes';
-import useAuth from './hooks/useAuth';
 
 export default function Layout(props: PropsWithChildren) {
-  const token = useAuth();
-  console.log(token);
   return (
     <>
       <HStack mb={5}>
@@ -23,6 +21,7 @@ export default function Layout(props: PropsWithChildren) {
         <Link as={NavLink} to={ROUTES.login}>
           <Text>Login</Text>
         </Link>
+        <AuthStatus />
       </HStack>
       {props.children}
     </>

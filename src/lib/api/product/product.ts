@@ -14,8 +14,6 @@ import type {
   UseQueryOptions,
   UseQueryResult,
 } from '@tanstack/react-query';
-import * as axios from 'axios';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import type { GetProductsCategoryCategoryNameParams } from '../../../model/getProductsCategoryCategoryNameParams';
 import type { GetProductsParams } from '../../../model/getProductsParams';
@@ -24,46 +22,46 @@ import type { GetProductsSearchParams } from '../../../model/getProductsSearchPa
 import type { Product } from '../../../model/product';
 import type { ProductDelete } from '../../../model/productDelete';
 import type { Products } from '../../../model/products';
+import { customAxiosInstance } from '../../customAxiosInstance';
+import type { ErrorType } from '../../customAxiosInstance';
 
 /**
  * @summary get all products
  */
 export const getProducts = (
   params?: GetProductsParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Products>> => {
-  return axios.default.get(`https://dummyjson.com/products`, {
-    ...options,
-    params: { ...params, ...options?.params },
+  signal?: AbortSignal,
+) => {
+  return customAxiosInstance<Products>({
+    url: `/products`,
+    method: 'GET',
+    params,
+    signal,
   });
 };
 
 export const getGetProductsQueryKey = (params?: GetProductsParams) => {
-  return [
-    `https://dummyjson.com/products`,
-    ...(params ? [params] : []),
-  ] as const;
+  return [`/products`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetProductsQueryOptions = <
   TData = Awaited<ReturnType<typeof getProducts>>,
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
 >(
   params?: GetProductsParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetProductsQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getProducts>>> = ({
     signal,
-  }) => getProducts(params, { signal, ...axiosOptions });
+  }) => getProducts(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getProducts>>,
@@ -75,21 +73,20 @@ export const getGetProductsQueryOptions = <
 export type GetProductsQueryResult = NonNullable<
   Awaited<ReturnType<typeof getProducts>>
 >;
-export type GetProductsQueryError = AxiosError<void>;
+export type GetProductsQueryError = ErrorType<void>;
 
 /**
  * @summary get all products
  */
 export const useGetProducts = <
   TData = Awaited<ReturnType<typeof getProducts>>,
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
 >(
   params?: GetProductsParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetProductsQueryOptions(params, options);
@@ -108,26 +105,25 @@ export const useGetProducts = <
  */
 export const getProductsSearch = (
   params?: GetProductsSearchParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Products>> => {
-  return axios.default.get(`https://dummyjson.com/products/search`, {
-    ...options,
-    params: { ...params, ...options?.params },
+  signal?: AbortSignal,
+) => {
+  return customAxiosInstance<Products>({
+    url: `/products/search`,
+    method: 'GET',
+    params,
+    signal,
   });
 };
 
 export const getGetProductsSearchQueryKey = (
   params?: GetProductsSearchParams,
 ) => {
-  return [
-    `https://dummyjson.com/products/search`,
-    ...(params ? [params] : []),
-  ] as const;
+  return [`/products/search`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetProductsSearchQueryOptions = <
   TData = Awaited<ReturnType<typeof getProductsSearch>>,
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
 >(
   params?: GetProductsSearchParams,
   options?: {
@@ -138,17 +134,16 @@ export const getGetProductsSearchQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getGetProductsSearchQueryKey(params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getProductsSearch>>
-  > = ({ signal }) => getProductsSearch(params, { signal, ...axiosOptions });
+  > = ({ signal }) => getProductsSearch(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getProductsSearch>>,
@@ -160,14 +155,14 @@ export const getGetProductsSearchQueryOptions = <
 export type GetProductsSearchQueryResult = NonNullable<
   Awaited<ReturnType<typeof getProductsSearch>>
 >;
-export type GetProductsSearchQueryError = AxiosError<void>;
+export type GetProductsSearchQueryError = ErrorType<void>;
 
 /**
  * @summary search products
  */
 export const useGetProductsSearch = <
   TData = Awaited<ReturnType<typeof getProductsSearch>>,
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
 >(
   params?: GetProductsSearchParams,
   options?: {
@@ -178,7 +173,6 @@ export const useGetProductsSearch = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetProductsSearchQueryOptions(params, options);
@@ -195,22 +189,21 @@ export const useGetProductsSearch = <
 /**
  * @summary get all products categories
  */
-export const getProductsCategories = (
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<string[]>> => {
-  return axios.default.get(
-    `https://dummyjson.com/products/categories`,
-    options,
-  );
+export const getProductsCategories = (signal?: AbortSignal) => {
+  return customAxiosInstance<string[]>({
+    url: `/products/categories`,
+    method: 'GET',
+    signal,
+  });
 };
 
 export const getGetProductsCategoriesQueryKey = () => {
-  return [`https://dummyjson.com/products/categories`] as const;
+  return [`/products/categories`] as const;
 };
 
 export const getGetProductsCategoriesQueryOptions = <
   TData = Awaited<ReturnType<typeof getProductsCategories>>,
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
 >(options?: {
   query?: Partial<
     UseQueryOptions<
@@ -219,15 +212,14 @@ export const getGetProductsCategoriesQueryOptions = <
       TData
     >
   >;
-  axios?: AxiosRequestConfig;
 }) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetProductsCategoriesQueryKey();
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getProductsCategories>>
-  > = ({ signal }) => getProductsCategories({ signal, ...axiosOptions });
+  > = ({ signal }) => getProductsCategories(signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getProductsCategories>>,
@@ -239,14 +231,14 @@ export const getGetProductsCategoriesQueryOptions = <
 export type GetProductsCategoriesQueryResult = NonNullable<
   Awaited<ReturnType<typeof getProductsCategories>>
 >;
-export type GetProductsCategoriesQueryError = AxiosError<void>;
+export type GetProductsCategoriesQueryError = ErrorType<void>;
 
 /**
  * @summary get all products categories
  */
 export const useGetProductsCategories = <
   TData = Awaited<ReturnType<typeof getProductsCategories>>,
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
 >(options?: {
   query?: Partial<
     UseQueryOptions<
@@ -255,7 +247,6 @@ export const useGetProductsCategories = <
       TData
     >
   >;
-  axios?: AxiosRequestConfig;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetProductsCategoriesQueryOptions(options);
 
@@ -271,20 +262,17 @@ export const useGetProductsCategories = <
 /**
  * @summary update a product
  */
-export const putProductsProductId = (
-  productId: number,
-  product: Product,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Product>> => {
-  return axios.default.put(
-    `https://dummyjson.com/products/${productId}`,
-    product,
-    options,
-  );
+export const putProductsProductId = (productId: number, product: Product) => {
+  return customAxiosInstance<Product>({
+    url: `/products/${productId}`,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    data: product,
+  });
 };
 
 export const getPutProductsProductIdMutationOptions = <
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -293,14 +281,13 @@ export const getPutProductsProductIdMutationOptions = <
     { productId: number; data: Product },
     TContext
   >;
-  axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof putProductsProductId>>,
   TError,
   { productId: number; data: Product },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof putProductsProductId>>,
@@ -308,7 +295,7 @@ export const getPutProductsProductIdMutationOptions = <
   > = (props) => {
     const { productId, data } = props ?? {};
 
-    return putProductsProductId(productId, data, axiosOptions);
+    return putProductsProductId(productId, data);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -318,13 +305,13 @@ export type PutProductsProductIdMutationResult = NonNullable<
   Awaited<ReturnType<typeof putProductsProductId>>
 >;
 export type PutProductsProductIdMutationBody = Product;
-export type PutProductsProductIdMutationError = AxiosError<void>;
+export type PutProductsProductIdMutationError = ErrorType<void>;
 
 /**
  * @summary update a product
  */
 export const usePutProductsProductId = <
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -333,7 +320,6 @@ export const usePutProductsProductId = <
     { productId: number; data: Product },
     TContext
   >;
-  axios?: AxiosRequestConfig;
 }) => {
   const mutationOptions = getPutProductsProductIdMutationOptions(options);
 
@@ -342,20 +328,17 @@ export const usePutProductsProductId = <
 /**
  * @summary update a product
  */
-export const patchProductsProductId = (
-  productId: number,
-  product: Product,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Product>> => {
-  return axios.default.patch(
-    `https://dummyjson.com/products/${productId}`,
-    product,
-    options,
-  );
+export const patchProductsProductId = (productId: number, product: Product) => {
+  return customAxiosInstance<Product>({
+    url: `/products/${productId}`,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    data: product,
+  });
 };
 
 export const getPatchProductsProductIdMutationOptions = <
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -364,14 +347,13 @@ export const getPatchProductsProductIdMutationOptions = <
     { productId: number; data: Product },
     TContext
   >;
-  axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof patchProductsProductId>>,
   TError,
   { productId: number; data: Product },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof patchProductsProductId>>,
@@ -379,7 +361,7 @@ export const getPatchProductsProductIdMutationOptions = <
   > = (props) => {
     const { productId, data } = props ?? {};
 
-    return patchProductsProductId(productId, data, axiosOptions);
+    return patchProductsProductId(productId, data);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -389,13 +371,13 @@ export type PatchProductsProductIdMutationResult = NonNullable<
   Awaited<ReturnType<typeof patchProductsProductId>>
 >;
 export type PatchProductsProductIdMutationBody = Product;
-export type PatchProductsProductIdMutationError = AxiosError<void>;
+export type PatchProductsProductIdMutationError = ErrorType<void>;
 
 /**
  * @summary update a product
  */
 export const usePatchProductsProductId = <
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -404,7 +386,6 @@ export const usePatchProductsProductId = <
     { productId: number; data: Product },
     TContext
   >;
-  axios?: AxiosRequestConfig;
 }) => {
   const mutationOptions = getPatchProductsProductIdMutationOptions(options);
 
@@ -413,18 +394,15 @@ export const usePatchProductsProductId = <
 /**
  * @summary delete a product
  */
-export const deleteProductsProductId = (
-  productId: number,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<ProductDelete>> => {
-  return axios.default.delete(
-    `https://dummyjson.com/products/${productId}`,
-    options,
-  );
+export const deleteProductsProductId = (productId: number) => {
+  return customAxiosInstance<ProductDelete>({
+    url: `/products/${productId}`,
+    method: 'DELETE',
+  });
 };
 
 export const getDeleteProductsProductIdMutationOptions = <
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -433,14 +411,13 @@ export const getDeleteProductsProductIdMutationOptions = <
     { productId: number },
     TContext
   >;
-  axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteProductsProductId>>,
   TError,
   { productId: number },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteProductsProductId>>,
@@ -448,7 +425,7 @@ export const getDeleteProductsProductIdMutationOptions = <
   > = (props) => {
     const { productId } = props ?? {};
 
-    return deleteProductsProductId(productId, axiosOptions);
+    return deleteProductsProductId(productId);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -458,13 +435,13 @@ export type DeleteProductsProductIdMutationResult = NonNullable<
   Awaited<ReturnType<typeof deleteProductsProductId>>
 >;
 
-export type DeleteProductsProductIdMutationError = AxiosError<void>;
+export type DeleteProductsProductIdMutationError = ErrorType<void>;
 
 /**
  * @summary delete a product
  */
 export const useDeleteProductsProductId = <
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -473,7 +450,6 @@ export const useDeleteProductsProductId = <
     { productId: number },
     TContext
   >;
-  axios?: AxiosRequestConfig;
 }) => {
   const mutationOptions = getDeleteProductsProductIdMutationOptions(options);
 
@@ -485,11 +461,13 @@ export const useDeleteProductsProductId = <
 export const getProductsProductId = (
   productId: number,
   params?: GetProductsProductIdParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Product>> => {
-  return axios.default.get(`https://dummyjson.com/products/${productId}`, {
-    ...options,
-    params: { ...params, ...options?.params },
+  signal?: AbortSignal,
+) => {
+  return customAxiosInstance<Product>({
+    url: `/products/${productId}`,
+    method: 'GET',
+    params,
+    signal,
   });
 };
 
@@ -497,15 +475,12 @@ export const getGetProductsProductIdQueryKey = (
   productId: number,
   params?: GetProductsProductIdParams,
 ) => {
-  return [
-    `https://dummyjson.com/products/${productId}`,
-    ...(params ? [params] : []),
-  ] as const;
+  return [`/products/${productId}`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetProductsProductIdQueryOptions = <
   TData = Awaited<ReturnType<typeof getProductsProductId>>,
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
 >(
   productId: number,
   params?: GetProductsProductIdParams,
@@ -517,10 +492,9 @@ export const getGetProductsProductIdQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ??
@@ -528,8 +502,7 @@ export const getGetProductsProductIdQueryOptions = <
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getProductsProductId>>
-  > = ({ signal }) =>
-    getProductsProductId(productId, params, { signal, ...axiosOptions });
+  > = ({ signal }) => getProductsProductId(productId, params, signal);
 
   return {
     queryKey,
@@ -546,14 +519,14 @@ export const getGetProductsProductIdQueryOptions = <
 export type GetProductsProductIdQueryResult = NonNullable<
   Awaited<ReturnType<typeof getProductsProductId>>
 >;
-export type GetProductsProductIdQueryError = AxiosError<void>;
+export type GetProductsProductIdQueryError = ErrorType<void>;
 
 /**
  * @summary get product by id
  */
 export const useGetProductsProductId = <
   TData = Awaited<ReturnType<typeof getProductsProductId>>,
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
 >(
   productId: number,
   params?: GetProductsProductIdParams,
@@ -565,7 +538,6 @@ export const useGetProductsProductId = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetProductsProductIdQueryOptions(
@@ -589,15 +561,14 @@ export const useGetProductsProductId = <
 export const getProductsCategoryCategoryName = (
   categoryName: string,
   params?: GetProductsCategoryCategoryNameParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Products>> => {
-  return axios.default.get(
-    `https://dummyjson.com/products/category/${categoryName}`,
-    {
-      ...options,
-      params: { ...params, ...options?.params },
-    },
-  );
+  signal?: AbortSignal,
+) => {
+  return customAxiosInstance<Products>({
+    url: `/products/category/${categoryName}`,
+    method: 'GET',
+    params,
+    signal,
+  });
 };
 
 export const getGetProductsCategoryCategoryNameQueryKey = (
@@ -605,14 +576,14 @@ export const getGetProductsCategoryCategoryNameQueryKey = (
   params?: GetProductsCategoryCategoryNameParams,
 ) => {
   return [
-    `https://dummyjson.com/products/category/${categoryName}`,
+    `/products/category/${categoryName}`,
     ...(params ? [params] : []),
   ] as const;
 };
 
 export const getGetProductsCategoryCategoryNameQueryOptions = <
   TData = Awaited<ReturnType<typeof getProductsCategoryCategoryName>>,
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
 >(
   categoryName: string,
   params?: GetProductsCategoryCategoryNameParams,
@@ -624,10 +595,9 @@ export const getGetProductsCategoryCategoryNameQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ??
@@ -636,10 +606,7 @@ export const getGetProductsCategoryCategoryNameQueryOptions = <
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getProductsCategoryCategoryName>>
   > = ({ signal }) =>
-    getProductsCategoryCategoryName(categoryName, params, {
-      signal,
-      ...axiosOptions,
-    });
+    getProductsCategoryCategoryName(categoryName, params, signal);
 
   return {
     queryKey,
@@ -656,14 +623,14 @@ export const getGetProductsCategoryCategoryNameQueryOptions = <
 export type GetProductsCategoryCategoryNameQueryResult = NonNullable<
   Awaited<ReturnType<typeof getProductsCategoryCategoryName>>
 >;
-export type GetProductsCategoryCategoryNameQueryError = AxiosError<void>;
+export type GetProductsCategoryCategoryNameQueryError = ErrorType<void>;
 
 /**
  * @summary get products of category
  */
 export const useGetProductsCategoryCategoryName = <
   TData = Awaited<ReturnType<typeof getProductsCategoryCategoryName>>,
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
 >(
   categoryName: string,
   params?: GetProductsCategoryCategoryNameParams,
@@ -675,7 +642,6 @@ export const useGetProductsCategoryCategoryName = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetProductsCategoryCategoryNameQueryOptions(
@@ -696,19 +662,17 @@ export const useGetProductsCategoryCategoryName = <
 /**
  * @summary create a new product
  */
-export const postProductsAdd = (
-  product: Product,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Product>> => {
-  return axios.default.post(
-    `https://dummyjson.com/products/add`,
-    product,
-    options,
-  );
+export const postProductsAdd = (product: Product) => {
+  return customAxiosInstance<Product>({
+    url: `/products/add`,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    data: product,
+  });
 };
 
 export const getPostProductsAddMutationOptions = <
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -717,14 +681,13 @@ export const getPostProductsAddMutationOptions = <
     { data: Product },
     TContext
   >;
-  axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postProductsAdd>>,
   TError,
   { data: Product },
   TContext
 > => {
-  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+  const { mutation: mutationOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postProductsAdd>>,
@@ -732,7 +695,7 @@ export const getPostProductsAddMutationOptions = <
   > = (props) => {
     const { data } = props ?? {};
 
-    return postProductsAdd(data, axiosOptions);
+    return postProductsAdd(data);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -742,13 +705,13 @@ export type PostProductsAddMutationResult = NonNullable<
   Awaited<ReturnType<typeof postProductsAdd>>
 >;
 export type PostProductsAddMutationBody = Product;
-export type PostProductsAddMutationError = AxiosError<void>;
+export type PostProductsAddMutationError = ErrorType<void>;
 
 /**
  * @summary create a new product
  */
 export const usePostProductsAdd = <
-  TError = AxiosError<void>,
+  TError = ErrorType<void>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -757,7 +720,6 @@ export const usePostProductsAdd = <
     { data: Product },
     TContext
   >;
-  axios?: AxiosRequestConfig;
 }) => {
   const mutationOptions = getPostProductsAddMutationOptions(options);
 
