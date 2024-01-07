@@ -1,4 +1,18 @@
-import { Button, Container, Input, Select, Text } from '@chakra-ui/react';
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Button,
+  Container,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Input,
+  Select,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 import { useState } from 'react';
 import {
   Form,
@@ -42,34 +56,70 @@ export default function LoginRoute() {
 
   return (
     <Container>
-      {from && <Text>You must log in to view the page at {from}</Text>}
+      {from && (
+        <Alert status="warning" my={4}>
+          <AlertIcon />
+          <AlertTitle>You are not logged in!</AlertTitle>
+          <AlertDescription>
+            You must log in to view the page at {from}
+          </AlertDescription>
+        </Alert>
+      )}
 
-      <Select
-        placeholder="Select user"
-        value={selectedLogin?.username}
-        onChange={(e) => {
-          setSelectedLogin(
-            users.find((user) => user.username === e.target.value) ?? null,
-          );
-        }}
-      >
-        {users.map((user) => (
-          <option key={user.username} value={user.username}>
-            {user.username}
-          </option>
-        ))}
-      </Select>
+      <FormControl my={4}>
+        <FormLabel>User select</FormLabel>
+        <Select
+          placeholder="Select user"
+          value={selectedLogin?.username}
+          onChange={(e) => {
+            setSelectedLogin(
+              users.find((user) => user.username === e.target.value) ?? null,
+            );
+          }}
+        >
+          {users.map((user) => (
+            <option key={user.username} value={user.username}>
+              {user.username}
+            </option>
+          ))}
+        </Select>
+        <FormHelperText>
+          Just select user from predefined to log in.
+        </FormHelperText>
+      </FormControl>
 
       <Form method="post" replace>
         <Input type="hidden" name="redirectTo" value={from ?? ROUTES.root} />
-        <Input value={selectedLogin?.username ?? ''} name="username" readOnly />
-        <Input value={selectedLogin?.password ?? ''} name="password" readOnly />
-        <Button type="submit" disabled={isLoggingIn}>
+        <Stack gap={2}>
+          <FormControl>
+            <FormLabel>Username</FormLabel>
+            <Input
+              value={selectedLogin?.username ?? ''}
+              name="username"
+              readOnly
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Password</FormLabel>
+            <Input
+              value={selectedLogin?.password ?? ''}
+              name="password"
+              readOnly
+            />
+          </FormControl>
+        </Stack>
+        <Button
+          type="submit"
+          disabled={isLoggingIn}
+          my={4}
+          width="100%"
+          colorScheme="green"
+        >
           {isLoggingIn ? 'Logging in...' : 'Login'}
         </Button>
       </Form>
       {actionData && actionData.error ? (
-        <Text colorScheme="red">{actionData.error}</Text>
+        <Text color="tomato">{actionData.error}</Text>
       ) : null}
     </Container>
   );

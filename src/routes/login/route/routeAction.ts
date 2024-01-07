@@ -8,15 +8,9 @@ export default async function loginAction({ request }: LoaderFunctionArgs) {
   const password = formData.get('password') as string | null;
 
   // Validate our form inputs and return validation errors via useActionData()
-  if (!username) {
+  if (!username || !password) {
     return {
-      error: 'You must provide a username to log in',
-    };
-  }
-
-  if (!password) {
-    return {
-      error: 'You must provide a password to log in',
+      error: 'You must select user to log in',
     };
   }
 
@@ -32,5 +26,6 @@ export default async function loginAction({ request }: LoaderFunctionArgs) {
     };
   }
 
-  return redirect('/');
+  const redirectTo = formData.get('redirectTo') as string | null;
+  return redirect(redirectTo || '/');
 }
