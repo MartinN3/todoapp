@@ -1,10 +1,10 @@
 import { Button, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
 import { useCallback, useState } from 'react';
 
-type AddTodoType = {
+type AddTodoProps = {
   handleSubmit: (text: string) => void;
 };
-export default function AddTodo(props: AddTodoType) {
+export default function AddTodo(props: AddTodoProps) {
   const [addTodoText, setAddTodoText] = useState('');
 
   const handleSubmit = useCallback(

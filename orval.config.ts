@@ -12,7 +12,6 @@ export default defineConfig({
       client: 'react-query',
       mock: true,
       prettier: true,
-      baseUrl: 'https://dummyjson.com',
     },
   },
 });

@@ -1,13 +1,13 @@
 import { Checkbox, Stack } from '@chakra-ui/react';
 
-import { Todo } from '../Todos';
+import { Todo } from '../Main';
 
-type TodosListType = {
+type TodosListProps = {
   todos: Todo[] | [];
   handleChange: (id: Todo['id']) => void;
 };
 
-export default function TodosList(props: TodosListType) {
+export default function TodosList(props: TodosListProps) {
   return (
     <Stack mt={1} spacing={1}>
       {props.todos.map((item) => (

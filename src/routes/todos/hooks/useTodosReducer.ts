@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useImmerReducer } from 'use-immer';
 
-import { Todo } from '../Todos';
+import { Todo } from '../Main';
 import addTodo from '../actions/addTodo';
 import removeTodo from '../actions/removeTodo';
 import toggleTodo from '../actions/toggleTodo';

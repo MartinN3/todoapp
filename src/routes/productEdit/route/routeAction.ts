@@ -2,12 +2,12 @@ import { QueryClient, queryOptions } from '@tanstack/react-query';
 import { ActionFunctionArgs, generatePath, redirect } from 'react-router-dom';
 import toInt from 'validator/es/lib/toInt';
 
-import { ROUTES } from '../../constants/routes';
+import { ROUTES } from '../../../constants/routes';
 import {
   getGetProductsProductIdQueryKey,
   getGetProductsQueryOptions,
   patchProductsProductId,
-} from '../../lib/api/product/product';
+} from '../../../lib/api/product/product';
 
 export default function action(queryClient: QueryClient) {
   return async ({ request, params: { id = '' } }: ActionFunctionArgs) => {

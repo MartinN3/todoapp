@@ -2,7 +2,7 @@ import { QueryClient, queryOptions } from '@tanstack/react-query';
 import { LoaderFunctionArgs } from 'react-router-dom';
 import toInt from 'validator/es/lib/toInt';
 
-import { getGetProductsProductIdQueryOptions } from '../../lib/api/product/product';
+import { getGetProductsProductIdQueryOptions } from '../../../lib/api/product/product';
 
 export default function loader(queryClient: QueryClient) {
   return async ({ params: { id = '' } }: LoaderFunctionArgs) => {

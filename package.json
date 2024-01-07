@@ -9,7 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test:ts": "tsc --noEmit",
-    "generate:api": "orval --config orval.config.ts"
+    "generate:api": "orval --config orval.config.ts",
+    "test": "vitest"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
@@ -43,6 +44,7 @@
     "msw": "^2.0.12",
     "orval": "^6.23.0",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "vitest": "^1.1.3"
   }
 }

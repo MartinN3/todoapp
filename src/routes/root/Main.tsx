@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 
 import Layout from '../../Layout';
 
-export default function Root() {
+export default function RootRoute() {
   return (
     <Layout>
       <Outlet />

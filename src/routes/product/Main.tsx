@@ -13,9 +13,9 @@ import toInt from 'validator/es/lib/toInt';
 
 import { ROUTES } from '../../constants/routes';
 import { useGetProductsProductId } from '../../lib/api/product/product';
-import loader from './routerLoader';
+import loader from './route/routeLoader';
 
-export default function Product() {
+export default function ProductRoute() {
   // first we get data fetched by react router
   const initialData = useLoaderData() as Awaited<
     ReturnType<ReturnType<typeof loader>>

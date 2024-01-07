@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { Todo } from '../Todos';
+import { Todo } from '../Main';
 
 export default function removeTodo(draft: Draft<Todo>[], id: Todo['id']) {
   const todoIndex = draft.findIndex((todo) => todo.id === id);

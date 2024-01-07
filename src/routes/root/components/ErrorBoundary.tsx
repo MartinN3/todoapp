@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as RouterLink, useRouteError } from 'react-router-dom';
 
-import { ROUTES } from '../../constants/routes';
+import { ROUTES } from '../../../constants/routes';
 
 export default function ErrorBoundary() {
   const error = useRouteError();

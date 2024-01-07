@@ -8,16 +8,18 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import { ROUTES } from './constants/routes';
+import AuthProvider from './contexts/AuthProvider';
 import Index from './routes/Index';
-import Product from './routes/product/Product';
-import productLoader from './routes/product/routerLoader';
-import ProductEdit from './routes/productEdit/ProductEdit';
-import editAction from './routes/productEdit/routerAction';
-import editLoader from './routes/productEdit/routerLoader';
-import Products from './routes/products/Products';
-import RootBoundary from './routes/root/ErrorBoundary';
-import Root from './routes/root/Root';
-import Todos from './routes/todos/Todos';
+import Login from './routes/login/Main';
+import Product from './routes/product/Main';
+import productLoader from './routes/product/route/routeLoader';
+import ProductEdit from './routes/productEdit/Main';
+import editAction from './routes/productEdit/route/routeAction';
+import editLoader from './routes/productEdit/route/routeLoader';
+import Products from './routes/products/Main';
+import Root from './routes/root/Main';
+import RootBoundary from './routes/root/components/ErrorBoundary';
+import Todos from './routes/todos/Main';
 import { queryClient } from './utils/queryClient';
 
 //TODO extend theme with customer styles
@@ -32,6 +34,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Index />,
+      },
+      {
+        path: ROUTES.login,
+        element: <Login />,
       },
       {
         path: ROUTES.todos,
@@ -61,7 +67,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <ChakraProvider theme={theme}>
-        <RouterProvider router={router} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
       </ChakraProvider>
     </QueryClientProvider>
   );
