@@ -26,6 +26,9 @@ export default function action(queryClient: QueryClient) {
     //   queryKey: productEditQueryOrvalKey,
     // });
 
+    // ********************************************************* //
+    // Due to dummy API cache updates ⬇⬇
+    // ********************************************************* //
     // but since we use dummy i manually update cache for product
     queryClient.setQueryData(
       [...productEditQueryOrvalKey, user?.username],
@@ -44,12 +47,12 @@ export default function action(queryClient: QueryClient) {
       queryFn: productsQueryOrvalOptions.queryFn,
     });
 
-    // get products cache or fetch products if doesn't exist
+    // get products list cache or fetch products if doesn't exist
     const productsQueryCache =
       queryClient.getQueryData(productsQuery.queryKey) ??
       (await queryClient.fetchQuery(productsQuery));
 
-    // update product cache
+    // update products list cache with modified product
     queryClient.setQueryData(productsQuery.queryKey, {
       ...productsQueryCache,
       products: productsQueryCache.products?.map((product) => {

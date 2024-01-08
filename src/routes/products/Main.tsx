@@ -1,34 +1,32 @@
 import { Container, SimpleGrid, Skeleton } from '@chakra-ui/react';
-import { useRouteLoaderData } from 'react-router-dom';
+import { Suspense } from 'react';
+import { Await, useLoaderData } from 'react-router-dom';
 
-import {
-  getGetProductsQueryOptions,
-  useGetProducts,
-} from '../../lib/api/product/product';
-import { User } from '../../model';
-import SingleProduct from './components/SingleProduct';
+import Products from './components/Products';
+import loader from './route/routeLoader';
 
 export default function ProductsRoute() {
-  const { user } = useRouteLoaderData('root') as { user: User | null };
-  const { data, status, error } = useGetProducts(undefined, {
-    query: {
-      queryKey: [...getGetProductsQueryOptions().queryKey, user?.username],
-    },
-  });
-
-  if (status === 'error') {
-    return <span>Error: {error.message}</span>;
-  }
+  // @ts-expect-error TODO fix this ankwardness with https://gist.github.com/dadamssg/66205f7884df74acfabb15a672419ce6#file-useloaderdata-indirection-tsx
+  const { products } = useLoaderData() as Awaited<
+    ReturnType<ReturnType<typeof loader>>
+  >;
 
   return (
     <>
       <Container maxW="5xl">
         <SimpleGrid spacing={4} columns={{ sm: 2, md: 3 }}>
-          {data?.products?.map((product) => {
-            return <SingleProduct product={product} key={product.id} />;
-          })}
-          {status === 'pending' &&
-            [...Array(12)].map(() => <Skeleton h={577} borderRadius={5} />)}
+          <Suspense
+            fallback={[...Array(12)].map((_, index) => (
+              <Skeleton h={577} borderRadius={5} key={index} />
+            ))}
+          >
+            <Await
+              resolve={products}
+              errorElement={<p>Error loading products!</p>}
+            >
+              <Products />
+            </Await>
+          </Suspense>
         </SimpleGrid>
       </Container>
     </>

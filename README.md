@@ -1,30 +1,29 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+To feel amused while spending my time on assigment, i chose to try new features or libs i have been eyeballing.
 
-Currently, two official plugins are available:
+App loads data to cache and so user can work with it. Cache can be edited and every user has separate data. Updates should be saved across logins until page reload.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React Router with Tanstack(React) Query with using loaders and actions.
+- orval for generating types since i was hitting walls with other libraries serving same purpose.
 
-## Expanding the ESLint configuration
+#### For ReactRouter V6 - that included some weird stuff i had to do:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Using loaders and actions on react router in contrast to data fetching in components with hooks and handling fetching or errors.
+- Using route loader as data store for my auth instead of context.
 
-- Configure the top-level `parserOptions` property like this:
+I like that one is able to avoid fetch waterfalls. - example article https://www.infoxicator.com/en/react-router-6-deferred-fetch
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+Overally i kind of feel that app got smaller for the good, but certain things like loosing typescript on Deferred loader, or doing "happy path" for react query that can handle all cases elegantly seems weird.
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+If i had to do application with lot of forms with cross dependant inputs, like i usually do, i wouldn't wanna use routeAction but on small apps, it's kinda comfortable to rely on formdata.
+
+#### For Orval
+
+Overally this lib suited well to this small project. I think that it could better handle queryKeys on queries. And maybe include straightforward method to fetch in routeLoaders. Also axios inclusion is something i don't usually do, but it is solid lib with tons of documentation so who doesn't like that.
+
+#### Article included
+
+I have found great summary on react router api i have used. In article he also mentions "tanstack router" and when i looked at comparisions with react router, it seemed like they didn't push for "Fetch" and some clunky loader stuff but keep goodies so i might agree with author that it might be worthwhile to check.
+
+https://programmingarehard.com/2023/04/01/react-routers-data-utilities-are-awkward.html/

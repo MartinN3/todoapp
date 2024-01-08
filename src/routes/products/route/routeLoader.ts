@@ -1,5 +1,5 @@
 import { QueryClient, queryOptions } from '@tanstack/react-query';
-import { LoaderFunctionArgs, redirect } from 'react-router-dom';
+import { LoaderFunctionArgs, defer, redirect } from 'react-router-dom';
 
 import { getGetProductsQueryOptions } from '../../../lib/api/product/product';
 import { fakeAuthProvider } from '../../../utils/auth';
@@ -22,9 +22,8 @@ export default function loader(queryClient: QueryClient) {
       queryFn: queryOrvalOptions.queryFn,
     });
 
-    return (
-      queryClient.getQueryData(query.queryKey) ??
-      (await queryClient.fetchQuery(query))
-    );
+    return defer({
+      products: queryClient.ensureQueryData(query),
+    });
   };
 }

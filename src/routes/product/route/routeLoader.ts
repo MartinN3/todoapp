@@ -16,8 +16,7 @@ export default function loader(queryClient: QueryClient) {
 
     return (
       // get from cache or fetch from server if doesnt exist
-      queryClient.getQueryData(query.queryKey) ??
-      (await queryClient.fetchQuery(query))
+      queryClient.ensureQueryData(query)
     );
   };
 }

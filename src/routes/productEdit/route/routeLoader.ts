@@ -16,9 +16,6 @@ export default function loader(queryClient: QueryClient) {
       queryKey: [...queryOrvalOptions.queryKey, user?.username],
       queryFn: queryOrvalOptions.queryFn,
     });
-    return (
-      queryClient.getQueryData(query.queryKey) ??
-      (await queryClient.fetchQuery(query))
-    );
+    return queryClient.ensureQueryData(query);
   };
 }
