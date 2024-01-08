@@ -1,4 +1,3 @@
-# React + TypeScript + Vite
 
 To feel amused while spending my time on assigment, i chose to try new features or libs i have been eyeballing.
 
